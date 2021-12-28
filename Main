@@ -1,0 +1,28 @@
+package com.company;
+import java.sql.*;
+
+public class Main {
+
+    public static void main(String[] args) {
+        try{
+            String url = "jdbc:mysql://localhost:3306/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";//указываю путь к базе данных
+            String userName = "root";//логин
+            String password = "";//пароль
+            Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();//создаём экземпляр класса с драйвером базы данных(в зависимости от базы данных)
+            try (Connection conn = DriverManager.getConnection(url, userName, password)){//подключаемся к базе данных. Используем исключения с ресурсами, для автоматического закрытия установленного соединения
+                Statement statement = conn.createStatement();  
+                ResultSet resultSet = statement.executeQuery("SELECT * FROM test.test");// делаем SQL запрос... получаем всю таблицу
+                while(resultSet.next()){ // организуем итерацию
+                    if(resultSet.getInt(1)<10) { // проверяем значение id 
+                        System.out.print(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3) + " " + resultSet.getString(4));
+                        System.out.println();
+                    }
+                }
+            }
+        }
+        catch(Exception ex){
+            System.out.println("Connection failed...");
+            System.out.println(ex);
+        }
+    }
+}
